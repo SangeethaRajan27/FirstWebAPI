@@ -6,7 +6,7 @@ namespace FirstWebApi.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class CalculatorController : ControllerBase
-    {
+    {//adding changes via github
         // api/Calculator/Add?a=10&b=5
         //"/" becomes a new route without adding the controller 
         [HttpGet("/add")]  
