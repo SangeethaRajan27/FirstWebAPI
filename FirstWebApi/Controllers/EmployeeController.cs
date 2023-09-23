@@ -13,13 +13,15 @@ namespace FirstWebApi.Controllers
         {
             _repositoryEmployee = repositoryEmployee;
         }
+
         /*[HttpGet]
         public List<Employee> AllEmployees() 
         {
             List<Employee> employees = _repositoryEmployee.AllEmployees();
             return employees;
         }*/
-        [HttpGet("get/allemployess")]
+
+        [HttpGet("/getAllEmployees")]
         public IEnumerable<EmployeeViewModel> getAllEmployees()
         {
             List<Employee> employees = _repositoryEmployee.AllEmployees();
@@ -38,12 +40,14 @@ namespace FirstWebApi.Controllers
                 ).ToList();
             return emplist;
         }
+
         [HttpGet("search/employee")]
         public Employee EmployeeDetails(int id)
         {
             Employee employee = _repositoryEmployee.FindEmployeeById(id);
             return employee;
         }
+
         [HttpPut]
         public Employee EditEmployee(int id, [FromBody] Employee updatedEmployee)
         {
@@ -51,16 +55,75 @@ namespace FirstWebApi.Controllers
             Employee savedEmployee = _repositoryEmployee.UpdateEmployee(updatedEmployee);
             return savedEmployee;
         }
-        [HttpPost("create/employee")]
-        public Employee CreateEmployee([FromBody] Employee newEmployee)
+
+        /*[HttpPut("/UpdateEmployee/{id}")]
+        public int EditEmployee1(int id,[FromBody] Employee updatedEmployee)
         {
-            _repositoryEmployee.AddEmployee(newEmployee); 
+            updatedEmployee.EmployeeId = id;
+            int result=_repositoryEmployee.UpdateEmployee1(updatedEmployee);
+            return result;
+        }*/
+
+        //By View Model
+        [HttpPut("/UpdateEmployee")]
+        public int EditEmployee1([FromBody] EmployeeViewModel updateEmployee)
+        {
+            //updateEmployee.EmployeeId = id;
+            Employee employee = new Employee()
+            {
+                EmployeeId = updateEmployee.EmpId,
+                FirstName = updateEmployee.FirstName,
+                LastName = updateEmployee.LastName,
+                BirthDate = updateEmployee.BirthDate,
+                HireDate = updateEmployee.HireDate,
+                City = updateEmployee.City,
+                ReportsTo = updateEmployee.ReportsTo,
+                Title = updateEmployee.Title
+            };
+            int result = _repositoryEmployee.UpdateEmployee1(employee);
+            return result;
+        }
+
+
+        [HttpPost("create/emp")]
+        public Employee CreateEmployee1([FromBody] Employee newEmployee)
+        {
+            _repositoryEmployee.AddEmployee1(newEmployee);
             return newEmployee;
         }
+
+
+        [HttpPost("/AddNewEmployee")]
+        public int CreateEmployee(EmployeeViewModel newEmployee)
+        {
+            /*_repositoryEmployee.AddEmployee(newEmployee); 
+            return newEmployee;*/
+            Employee emp = new Employee()
+            {
+                FirstName = newEmployee.FirstName,
+                LastName = newEmployee.LastName,
+                BirthDate = newEmployee.BirthDate,
+                HireDate = newEmployee.HireDate,
+                Title = newEmployee.Title,
+                City = newEmployee.City,
+                ReportsTo = newEmployee.ReportsTo > 0 ? newEmployee.ReportsTo : null
+            };
+            int result = _repositoryEmployee.AddEmployee(emp);
+            return result;
+        }
+
+
         [HttpDelete("{id}")]
         public int DeleteEmployee(int id)
         {
             _repositoryEmployee.DeleteEmployee(id);
+            return id;
+        }
+        //By View Model
+        [HttpDelete("/DeleteEmployee/{id}")]
+        public int DeleteEmployee1(int id)
+        {
+            _repositoryEmployee.DeleteEmployee1(id);
             return id;
         }
     }
